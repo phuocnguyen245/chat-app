@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useChatContext } from 'stream-chat-react';
 import ChannelItem from './ChannelItem';
 
-const filter = {
-  type: 'messaging',
-  members: { $in: ['nguyen1'] },
-};
 const sort: any = { last_message_at: -1 };
 
-const BrowseChannels = ({ onClose }: any) => {
+const BrowseChannels = ({ onClose, onSetChannel }: any) => {
   const { client, setActiveChannel }: any = useChatContext();
 
   const [channels, setChannels] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const filter = useMemo(() => {
+    return { type: 'messaging', members: { $in: [client.user.id] } };
+  }, [client]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -21,21 +21,27 @@ const BrowseChannels = ({ onClose }: any) => {
           watch: true,
           state: true,
         });
+        console.log(response);
 
         const filterChannels: any = response.filter((c: any) => c.type === 'messaging');
-
         setChannels(filterChannels);
         setLoading(false);
       }
     };
     fetch();
-  }, []);
+  }, [client, filter]);
 
   const joinChannel = async (id: any) => {
-    const filterChannel = channels.find((c: any) => c.id === id);
-    const channel = client.channel('messaging', filterChannel.id);
-    await channel.watch();
-    onClose();
+    const findChannel = channels.find((c: any) => c.id === id);
+    if (!findChannel) {
+      onClose();
+    } else {
+      findChannel.addMembers([client.user.id]);
+      findChannel.watch();
+      onSetChannel(findChannel);
+      setActiveChannel(findChannel);
+      onClose();
+    }
   };
 
   return (
@@ -45,7 +51,7 @@ const BrowseChannels = ({ onClose }: any) => {
       ) : (
         <ul>
           {channels?.map((c: any) => {
-            return <ChannelItem key={c.cid} onJoin={(id: any) => joinChannel(id)} channel={c} />;
+            return <ChannelItem key={c.cid} onJoin={joinChannel} channel={c} />;
           })}
         </ul>
       )}

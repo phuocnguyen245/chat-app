@@ -6,8 +6,6 @@ interface props {
   key?: any;
 }
 const ChannelItem = ({ onJoin, channel, key }: props) => {
-  console.log(channel);
-
   return (
     <li>
       <div>

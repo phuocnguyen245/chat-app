@@ -1,18 +1,21 @@
 import React from 'react';
 import { Tabs } from 'antd';
 import BrowseChannels from '.';
-const AddingChannel = ({ onClose }: any) => {
+import CreateChannel from './CreateChannel';
+
+interface props {
+  onClose: () => any;
+  onSetChannel: (value: any) => void;
+}
+const AddingChannel = ({ onClose, onSetChannel }: props) => {
   const handleChangeTab = (key: string | number) => {};
   return (
     <Tabs defaultActiveKey="1" onChange={handleChangeTab}>
       <Tabs.TabPane tab="Browser" key="1">
-        <BrowseChannels onClose={onClose} />
+        <BrowseChannels onClose={onClose} onSetChannel={onSetChannel} />
       </Tabs.TabPane>
       <Tabs.TabPane tab="Create" key="2">
-        {/* <AddingChannel /> */}
-      </Tabs.TabPane>
-      <Tabs.TabPane tab="Tab 3" key="3">
-        Content of Tab Pane 3
+        <CreateChannel onClose={onClose} onSetChannel={onSetChannel} />
       </Tabs.TabPane>
     </Tabs>
   );
