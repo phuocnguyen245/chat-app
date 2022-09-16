@@ -12,8 +12,8 @@
     &__image {
       margin-right: 20px;
       img {
-        width: 70px;
-        height: 70px;
+        width: 70px !important;
+        height: 70px !important;
         border-radius: 100%;
       }
     }
@@ -40,12 +40,12 @@
     padding: 10px;
     display: flex;
     align-items: center;
-    width: 200px;
+    width: 250px;
     background-color: rgba(46, 48, 51, 0.98);
     border-radius: 10px;
     .user__img {
-      width: 70px;
-      height: 70px;
+      width: 70px !important;
+      height: 70px !important;
       border-radius: 100%;
       overflow: hidden;
       margin-right: 10px;
@@ -54,9 +54,9 @@
         height: 100%;
       }
     }
-    .user__name{
-        color: #fff;
-        font-size: 18px;
+    .user__name {
+      color: #fff;
+      font-size: 18px;
     }
   }
 }

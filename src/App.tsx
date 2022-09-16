@@ -9,31 +9,32 @@ import 'antd/dist/antd.css';
 import User from './container/ChannelBody/User';
 import BrowseChannels from './container/BrowseChannels';
 import './container/style/index.scss';
+
 const user1 = {
-  id: 'USER_TEST_11',
-  name: 'USER_TEST_11',
+  id: 'USER_TEST_111',
+  name: 'USER_TEST_111',
   image: 'https://i.pinimg.com/originals/3a/69/ae/3a69ae3942d4a9da6c3cbc93b1c8f051.jpg',
 };
 const user2 = {
-  id: 'USER_TEST_22',
-  name: 'USER_TEST_22',
+  id: 'USER_TEST_222',
+  name: 'USER_TEST_222',
   image:
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpZfuhXmuOc9vS75-O4NRPFQkPBRa3KO_mHkbU9YVdBZ4L7OjScSg65mu4wV_kc-eWsyo&usqp=CAU',
 };
 const user3 = {
-  id: 'USER_TEST_33',
-  name: 'USER_TEST_33',
+  id: 'USER_TEST_333',
+  name: 'USER_TEST_333',
   image:
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLHzUOzCRx-S6dg4fFyy5Klc2BaDzIrkVCCT-hB9K3ioA7ryAQQuzWRr-pGGOaFx-ZlaY&usqp=CAU',
 };
 const user4 = {
-  id: 'USER_TEST_44',
-  name: 'USER_TEST_44',
+  id: 'USER_TEST_444',
+  name: 'USER_TEST_444',
   image:
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWZMmzyGuLzccZ1qrPQ6Cytvmz7t9EvIqEG8pw22bMLqc210KqLX_ERisRO8VAUhuNz1A&usqp=CAU',
 };
 
-const users = [user1, user2];
+const users = [user3, user2];
 
 const randomUser = () => {
   const randomIndex = Math.floor(Math.random() * users.length);
@@ -57,7 +58,7 @@ const App = () => {
 
       await client.connectUser(user, client.devToken(user.id));
       const channel = client.channel('messaging', 'general1', {
-        image: 'https://goo.gl/Zefkbx',
+        image: 'https://i.pinimg.com/736x/0e/25/e9/0e25e977ec41237a19edd736a3340bef.jpg',
         name: 'General1',
       });
       await channel.watch();
@@ -72,7 +73,7 @@ const App = () => {
     return () => {
       if (chatClient) chatClient.disconnectUser();
     };
-  }, [chatClient]);
+  }, []);
 
   if (!chatClient || !channel) {
     return <LoadingIndicator />;
@@ -105,8 +106,6 @@ const App = () => {
 
   const CustomPreview = (props: any) => {
     const { channel, setActiveChannel }: any = props;
-    const { channel: activeChannel } = useChatContext();
-    const selected = channel?.id === activeChannel?.id;
     const renderMessageText = () => {
       const lastMessageText = channel?.state?.messages[channel.state.messages.length - 1]?.text;
       const text = lastMessageText || 'message text';
@@ -125,16 +124,12 @@ const App = () => {
       setChannel(channel);
       channel.watch();
     };
-    console.log(channel);
-
     return (
       <div className={'channel-list'} onClick={() => handleClick(channel)}>
         <div className="channel">
           <div className="channel__image">
             <img
-              src={
-                'https://images.unsplash.com/photo-1517976547714-720226b864c1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3000&q=80'
-              }
+              src={channel?.data?.image || 'https://i.pinimg.com/736x/0e/25/e9/0e25e977ec41237a19edd736a3340bef.jpg'}
               alt="avatar"
             />
           </div>
