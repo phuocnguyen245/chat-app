@@ -8,24 +8,32 @@ import ChannelBody from './container/ChannelBody';
 import 'antd/dist/antd.css';
 import User from './container/ChannelBody/User';
 import BrowseChannels from './container/BrowseChannels';
-
+import './container/style/index.scss';
 const user1 = {
-  id: 'TEST_1',
-  name: 'TEST1',
-  image: 'https://getstream.io/random_png/?id=bitter-wave-0&name=bitter-wave-0',
+  id: 'USER_TEST_11',
+  name: 'USER_TEST_11',
+  image: 'https://i.pinimg.com/originals/3a/69/ae/3a69ae3942d4a9da6c3cbc93b1c8f051.jpg',
 };
 const user2 = {
-  id: 'TEST_2',
-  name: 'TEST2',
-  image: 'https://getstream.io/random_png/?id=bitter-wave-0&name=bitter-wave-0',
+  id: 'USER_TEST_22',
+  name: 'USER_TEST_22',
+  image:
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpZfuhXmuOc9vS75-O4NRPFQkPBRa3KO_mHkbU9YVdBZ4L7OjScSg65mu4wV_kc-eWsyo&usqp=CAU',
 };
 const user3 = {
-  id: 'TEST_3',
-  name: 'TEST3',
-  image: 'https://getstream.io/random_png/?id=bitter-wave-0&name=bitter-wave-0',
+  id: 'USER_TEST_33',
+  name: 'USER_TEST_33',
+  image:
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLHzUOzCRx-S6dg4fFyy5Klc2BaDzIrkVCCT-hB9K3ioA7ryAQQuzWRr-pGGOaFx-ZlaY&usqp=CAU',
+};
+const user4 = {
+  id: 'USER_TEST_44',
+  name: 'USER_TEST_44',
+  image:
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWZMmzyGuLzccZ1qrPQ6Cytvmz7t9EvIqEG8pw22bMLqc210KqLX_ERisRO8VAUhuNz1A&usqp=CAU',
 };
 
-const users = [user2, user1];
+const users = [user1, user2];
 
 const randomUser = () => {
   const randomIndex = Math.floor(Math.random() * users.length);
@@ -72,10 +80,10 @@ const App = () => {
 
   const CustomListContainer = (props: any) => {
     return (
-      <div style={{ width: '200px' }}>
-        <div style={{ width: '200px' }}>
+      <div style={{ width: '500px' }}>
+        {/* <div style={{ width: '500px' }}>
           Channels <Button onClick={() => setIsAddChannel(true)}>+</Button>
-        </div>
+        </div> */}
         {props.children}
       </div>
     );
@@ -97,24 +105,15 @@ const App = () => {
 
   const CustomPreview = (props: any) => {
     const { channel, setActiveChannel }: any = props;
-
     const { channel: activeChannel } = useChatContext();
-
     const selected = channel?.id === activeChannel?.id;
-
     const renderMessageText = () => {
       const lastMessageText = channel?.state?.messages[channel.state.messages.length - 1]?.text;
-
       const text = lastMessageText || 'message text';
-
       return text.length < 60 ? lastMessageText : `${text.slice(0, 70)}...`;
     };
-
     if (!channel.state.messages.length) return null;
-
     const handleClick = async (value: any) => {
-      console.log(value);
-
       const channel = await chatClient.channel('messaging', value.id, {
         name: value?.data?.name,
         image: value.data?.image,
@@ -126,18 +125,23 @@ const App = () => {
       setChannel(channel);
       channel.watch();
     };
+    console.log(channel);
+
     return (
-      <div
-        style={{ background: 'red' }}
-        className={selected ? 'channel-preview__container selected' : 'channel-preview__container'}
-        onClick={() => handleClick(channel)}
-      >
-        <div className="channel-preview__content-wrapper">
-          <div className="channel-preview__content-top">
-            <p className="channel-preview__content-name">{channel?.data?.name || 'Channel'}</p>
-            <p className="channel-preview__content-name">{channel?.data?.subtitle}</p>
+      <div className={'channel-list'} onClick={() => handleClick(channel)}>
+        <div className="channel">
+          <div className="channel__image">
+            <img
+              src={
+                'https://images.unsplash.com/photo-1517976547714-720226b864c1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3000&q=80'
+              }
+              alt="avatar"
+            />
           </div>
-          <p className="channel-preview__content-message">{renderMessageText()}</p>
+          <div className="channel__detail">
+            <p className="channel__detail__name">{channel?.data?.name || 'Channel'}</p>
+            <p className="channel__detail__text">{renderMessageText()}</p>
+          </div>
         </div>
       </div>
     );
@@ -151,7 +155,7 @@ const App = () => {
           onSetChannel={setChannel}
           onClose={() => setIsAddChannel(false)}
         />
-        <div style={{ display: 'flex', width: '100%' }}>
+        <div>
           <ChannelList
             List={CustomListContainer}
             Preview={CustomPreview}
@@ -159,15 +163,15 @@ const App = () => {
             sort={sort}
             onMessageNew={customOnMessageNew}
           />
-          <div style={{ width: '25%' }}>
+          {/* <div>
             <BrowseChannels onClose={() => setIsAddChannel(false)} onSetChannel={setChannel} />
-          </div>
+          </div> */}
           <Channel channel={channel}>
-            {isAddChannel ? (
+            {/* {isAddChannel ? (
               <AddingChannel onClose={() => setIsAddChannel(false)} onSetChannel={setChannel} />
-            ) : (
-              <ChannelBody />
-            )}
+            ) : ( */}
+            <ChannelBody />
+            {/* )} */}
           </Channel>
         </div>
         <Thread />

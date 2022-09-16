@@ -21,8 +21,6 @@ const BrowseChannels = ({ onClose, onSetChannel }: any) => {
           watch: true,
           state: true,
         });
-        console.log(response);
-
         const filterChannels: any = response.filter((c: any) => c.type === 'messaging');
         setChannels(filterChannels);
         setLoading(false);
