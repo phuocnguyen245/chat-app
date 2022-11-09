@@ -34,7 +34,7 @@ const user4 = {
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWZMmzyGuLzccZ1qrPQ6Cytvmz7t9EvIqEG8pw22bMLqc210KqLX_ERisRO8VAUhuNz1A&usqp=CAU',
 };
 
-const users = [user3, user2];
+const users = [user3];
 
 const randomUser = () => {
   const randomIndex = Math.floor(Math.random() * users.length);
@@ -50,8 +50,8 @@ const App = () => {
 
   useEffect(() => {
     const initChat = async () => {
-      const client = StreamChat.getInstance('qhk6w6rhkxpt');
-      const user = randomUser();
+      const client = StreamChat.getInstance('pz8nsv3b98d6');
+      const user = user3;
       const filterChat = {
         members: { $in: [user.id] },
       };
