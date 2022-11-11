@@ -12,7 +12,10 @@ const CreateChannel = ({ onClose, onSetChannel }: any) => {
       const channel = await client.channel('messaging', id, {
         name: values.name,
         image: values.image,
+        des: client.user.name,
       });
+      console.log(channel);
+
       await channel.create();
       channel.addMembers([client.user.id]);
       setActiveChannel(channel);

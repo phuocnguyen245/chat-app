@@ -1,48 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import { StreamChat } from 'stream-chat';
-import { Channel, ChannelList, Chat, LoadingIndicator, Thread, useChatContext } from 'stream-chat-react';
-import { Button } from 'antd';
-import 'stream-chat-react/dist/css/index.css';
-import AddingChannel from './container/BrowseChannels/AddingChannel';
-import ChannelBody from './container/ChannelBody';
 import 'antd/dist/antd.css';
+import { useEffect, useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import { StreamChat } from 'stream-chat';
+import { Channel, ChannelList, Chat, LoadingIndicator, Thread } from 'stream-chat-react';
+import 'stream-chat-react/dist/css/index.css';
+import ChannelBody from './container/ChannelBody';
 import User from './container/ChannelBody/User';
-import BrowseChannels from './container/BrowseChannels';
 import './container/style/index.scss';
-
+import { useParams } from 'react-router-dom';
 const user1 = {
-  id: 'USER_TEST_111',
-  name: 'USER_TEST_111',
+  id: 'Tai_khoan_1',
+  name: 'Tai_khoan_1',
   image: 'https://i.pinimg.com/originals/3a/69/ae/3a69ae3942d4a9da6c3cbc93b1c8f051.jpg',
 };
 const user2 = {
-  id: 'USER_TEST_222',
-  name: 'USER_TEST_222',
+  id: 'Tai_khoan_2',
+  name: 'Tai_khoan_2',
   image:
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpZfuhXmuOc9vS75-O4NRPFQkPBRa3KO_mHkbU9YVdBZ4L7OjScSg65mu4wV_kc-eWsyo&usqp=CAU',
 };
 const user3 = {
-  id: 'USER_TEST_333',
-  name: 'USER_TEST_333',
+  id: 'Tai_khoan_3',
+  name: 'Tai_khoan_3',
   image:
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLHzUOzCRx-S6dg4fFyy5Klc2BaDzIrkVCCT-hB9K3ioA7ryAQQuzWRr-pGGOaFx-ZlaY&usqp=CAU',
 };
 const user4 = {
-  id: 'USER_TEST_444',
-  name: 'USER_TEST_444',
+  id: 'Tai_khoan_4',
+  name: 'Tai_khoan_4',
   image:
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWZMmzyGuLzccZ1qrPQ6Cytvmz7t9EvIqEG8pw22bMLqc210KqLX_ERisRO8VAUhuNz1A&usqp=CAU',
 };
 
-const users = [user3];
-
-const randomUser = () => {
-  const randomIndex = Math.floor(Math.random() * users.length);
-  return users[randomIndex];
-};
+export const users = [user1, user2, user3, user4];
 
 const sort: any = { last_message_at: -1 };
 const App = () => {
+  const { id } = useParams();
+
   const [chatClient, setChatClient] = useState<any>(null);
   const [channel, setChannel] = useState<any>(null);
   const [filters, setFilters] = useState<any>();
@@ -51,7 +46,7 @@ const App = () => {
   useEffect(() => {
     const initChat = async () => {
       const client = StreamChat.getInstance('pz8nsv3b98d6');
-      const user = user3;
+      const user = id === '1' ? user1 : id === '2' ? user2 : id === '3' ? user3 : user4;
       const filterChat = {
         members: { $in: [user.id] },
       };
@@ -73,21 +68,14 @@ const App = () => {
     return () => {
       if (chatClient) chatClient.disconnectUser();
     };
-  }, []);
+  }, [id, chatClient]);
 
   if (!chatClient || !channel) {
     return <LoadingIndicator />;
   }
 
   const CustomListContainer = (props: any) => {
-    return (
-      <div style={{ width: '500px' }}>
-        {/* <div style={{ width: '500px' }}>
-          Channels <Button onClick={() => setIsAddChannel(true)}>+</Button>
-        </div> */}
-        {props.children}
-      </div>
-    );
+    return <div style={{ width: '500px' }}>{props.children}</div>;
   };
   const customOnMessageNew = async ({ setChannels, event }: any) => {
     const eventChannel = event.channel;
@@ -118,23 +106,31 @@ const App = () => {
         image: value.data?.image,
       });
       await channel.create();
-      // channel.addMembers([value.id]);
-      // channel.addMembers([chatClient.user.id]);
       setActiveChannel(channel);
       setChannel(channel);
       channel.watch();
     };
+    const userKey = Object.keys(channel.state.members).filter((user) => user !== channel._client.userID);
+
     return (
       <div className={'channel-list'} onClick={() => handleClick(channel)}>
         <div className="channel">
           <div className="channel__image">
             <img
-              src={channel?.data?.image || 'https://i.pinimg.com/736x/0e/25/e9/0e25e977ec41237a19edd736a3340bef.jpg'}
+              src={
+                Object.keys(channel.state.members).length <= 2
+                  ? channel.state.members[userKey[0]].user.image
+                  : channel?.data.image
+              }
               alt="avatar"
             />
           </div>
           <div className="channel__detail">
-            <p className="channel__detail__name">{channel?.data?.name || 'Channel'}</p>
+            <p className="channel__detail__name">
+              {Object.keys(channel.state.members).length <= 2
+                ? channel.state.members[userKey[0]].user.name
+                : channel?.data.name}
+            </p>
             <p className="channel__detail__text">{renderMessageText()}</p>
           </div>
         </div>
@@ -143,6 +139,7 @@ const App = () => {
   };
   return (
     <div>
+      <Outlet />
       <Chat client={chatClient} theme="messaging light">
         <User
           channel={channel}
@@ -158,15 +155,8 @@ const App = () => {
             sort={sort}
             onMessageNew={customOnMessageNew}
           />
-          {/* <div>
-            <BrowseChannels onClose={() => setIsAddChannel(false)} onSetChannel={setChannel} />
-          </div> */}
           <Channel channel={channel}>
-            {/* {isAddChannel ? (
-              <AddingChannel onClose={() => setIsAddChannel(false)} onSetChannel={setChannel} />
-            ) : ( */}
-            <ChannelBody />
-            {/* )} */}
+            <ChannelBody channel={channel} />
           </Channel>
         </div>
         <Thread />

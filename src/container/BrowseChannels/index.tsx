@@ -41,7 +41,6 @@ const BrowseChannels = ({ onClose, onSetChannel }: any) => {
       onClose();
     }
   };
-
   return (
     <div>
       {loading ? (
